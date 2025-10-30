@@ -1,24 +1,31 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { SessionProvider, useSession } from './configs/ctx';
+import { SplashScreenController } from './configs/splash';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+export default function Root() {
+  // Set up the auth context and render your layout inside of it.
+  return (
+    <SessionProvider>
+      <SplashScreenController />
+      <RootNavigator />
+    </SessionProvider>
+  );
+}
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+// Create a new component that can access the SessionProvider context later.
+function RootNavigator() {
+ const { session } = useSession();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack screenOptions={{ headerShown: !!session}}>
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(tabs)" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={!session} >
+        <Stack.Screen name="login" />
+      </Stack.Protected>
+    </Stack>
   );
 }

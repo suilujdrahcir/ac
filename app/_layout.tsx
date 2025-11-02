@@ -1,31 +1,39 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
 import "../global.css";
-import { SessionProvider, useSession } from './configs/ctx';
-import { SplashScreenController } from './configs/splash';
+import { SessionProvider, useSession } from "./configs/ctx";
+import { SplashScreenController } from "./configs/splash";
 
 export default function Root() {
-  // Set up the auth context and render your layout inside of it.
-  return (
-    <SessionProvider>
-      <SplashScreenController />
-      <RootNavigator />
-    </SessionProvider>
-  );
+    // Set up the auth context and render your layout inside of it.
+    return (
+        <SessionProvider>
+            <SplashScreenController />
+            <RootNavigator />
+        </SessionProvider>
+    );
 }
 
 // Create a new component that can access the SessionProvider context later.
 function RootNavigator() {
- const { session } = useSession();
+    const { session } = useSession();
 
-  return (
-    <Stack screenOptions={{ headerShown: !!session}}>
-      <Stack.Protected guard={!!session}>
-        <Stack.Screen name="(tabs)" />
-      </Stack.Protected>
+    return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Protected guard={!!session}>
+                <Stack.Screen name="(tabs)" />
+            </Stack.Protected>
 
-      <Stack.Protected guard={!session} >
-        <Stack.Screen name="login" />
-      </Stack.Protected>
-    </Stack>
-  );
+            <Stack.Protected guard={!session}>
+                <Stack.Screen name="login" />
+                <Stack.Screen
+                    name="(modals)/signup"
+                    options={{
+                        presentation: "modal",
+                        headerShown: false,
+                        title: "Create Account",
+                    }}
+                />
+            </Stack.Protected>
+        </Stack>
+    );
 }

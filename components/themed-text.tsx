@@ -13,7 +13,7 @@ export type TypeClassNames = {
 
 export function ThemedText({
     style,
-    className,
+    className = "",
     type = "default",
     ...rest
 }: ThemedTextProps) {
@@ -27,7 +27,8 @@ export function ThemedText({
 
     return (
         <Text
-            className={`${colorScheme === "light" ? "text-[#11181C]" : "text-[#ECEDEE]"} ${typeClassNames[type] ?? ""} ${className}`}
+            style={[style]}
+            className={`p-[15px] ${colorScheme === "light" ? "text-[#11181C]" : "text-[#ECEDEE]"} ${typeClassNames[type] ?? ""} ${className}`}
             {...rest}
         />
     );

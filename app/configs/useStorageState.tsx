@@ -63,6 +63,5 @@ export function useStorageState(key: string): UseStateHook<string> {
     [key]
   );
 
-  console.log([state, setValue]);
   return [state, setValue];
 }
